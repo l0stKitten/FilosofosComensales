@@ -2,14 +2,19 @@
 #include<pthread.h>
 
 //Definimos globalmente un número de filosofos
-#define NUM_FILOSOFOS 5
+#define NUM_FILOSOFOS 10
 
 // Metodo filosofo comer
 void *comer (void *arg);
 
+//Recurso principal
+int variable = 0;
+
 int main(void){
 	char filo[20] = "Epicuro";
 	char filo2[20] = "Confucio";
+
+	printf("Variable: %d \n", variable);
 	
 	pthread_t filosofos[NUM_FILOSOFOS];
 	int identificadores[NUM_FILOSOFOS];
@@ -37,15 +42,19 @@ int main(void){
 	//pthread_join(epicurio, NULL);
 	//pthread_join(confucio, NULL);
 	
+	printf("Variable: %d \n", variable);
+
 	return 0;
 }
 
+//Se hace uso del recurso compartido
 void *comer (void *arg){
 
 	//char *nombre = (char *)arg;
 	int ident = *((int *)arg);
-	for (int i=1; true; i++){
-		printf("Filósofo - %d está comiendo : %d \n", ident, i);
+	for (int i=1; i<=100; i++){
+		variable = variable + 1;
+		//printf("Filósofo - %d está comiendo : %d . Variable = %d \n", ident, i, variable);
 	}
 	return NULL;
 }
