@@ -2,6 +2,7 @@
 #include<pthread.h>
 #include<string.h>
 #include<stdlib.h>
+#include<time.h>
 
 //Definimos globalmente un número de filosofos
 #define NUM_FILOSOFOS 5
@@ -12,10 +13,23 @@ void *comer (void *arg);
 //Recurso principal
 int variable = 0;
 
+//Tenedores
+int tenedores[NUM_FILOSOFOS];
+
+//Acciones de los filosofos
+//0 = pensar
+//1 = tomar tenedor derecho
+//2 = tomar tenedor izquierdo
+//3 = comer
+int accion_Filo[NUM_FILOSOFOS];
+
 int main(void){
 	//Array de nombres de filósofos
 	char nomFilo[10][20] = {"Confucio", "Pitágoras", "Platón", "Sócrates", "Epicurio", "Tales", "Heráclito", "Diógenes", "Sófocles", "Zenón"};
 	
+	int i;
+	int j;
+
 	//Estado de los nombres
 	int estNom[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	
@@ -23,9 +37,13 @@ int main(void){
 	
 	pthread_t filosofos[NUM_FILOSOFOS];
 	//int identificadores[NUM_FILOSOFOS];
+	
+	//Inicialización de los tenedores y estado de los filosofos
+	for (i = 0; i < NUM_FILOSOFOS; i++){
+		tenedores[i] = i;
+		accion_Filo[i] = 0;
+	}
 
-	int i;
-	int j;
 	//Creacion de los filosofos
 	for (i = 0; i < NUM_FILOSOFOS; i++){
 		//Si el nombre no ha sido usado, NUM_FILOSOFOS < 10
@@ -75,7 +93,7 @@ void *comer (void *arg){
 	//int ident = *((int *)arg);
 	for (int i=1; i<=3; i++){
 		variable = variable + 1;
-		printf("Filósofo - %s está comiendo : %d . Variable = %d \n", nombre, i, variable);
+		printf("Filósofo %s está comiendo : %d . Variable = %d \n", nombre, i, variable);
 	}
 	return NULL;
 }
