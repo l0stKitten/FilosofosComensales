@@ -12,7 +12,7 @@
 void *comer (void *arg);
 
 //Método para imprimir acción
-void printAccion (int acc, char* nom, int posicion);
+void printAccion(int acc, char* nom, int posi);
 
 //Método para encontrar la posición del Filósofo
 int posicion(char* nom);
@@ -70,11 +70,10 @@ int main(void){
 			j = 0;
 		}
 		if (estNom[j] == 0){
-			pthread_create(&filosofos[i], NULL, &comer, &nomFilo[j]);
-			estNom[j] += 1;
-			accion_Filo[i] = 0;
+			pthread_create(&filosofos[i], NULL, &comer, &nomFilo[i]);
+			estNom[i] += 1;
 		//Si el nombre ha sido usado, NUM_FILOSOFOS > 10
-		} else{
+		}else{
 			char num[1];
 			snprintf(num, sizeof(num), "%d", estNom[j]);
 			strcat(nomFilo[j], num);
@@ -110,15 +109,15 @@ int main(void){
 }
 
 //Imprimir acción
-void printAccion(int acc, char* nom, int posicion){
+void printAccion(int acc, char* nom, int posi){
 	if (acc == 0){
-		printf("%d Filósofo %s está pensando\n", posicion, nom);
+		printf("%d Filósofo %s está pensando\n", posi, nom);
 	}else if(acc == 1){
-		printf("%d Filósofo %s levanta tenedor derecho\n", posicion, nom);
+		printf("%d Filósofo %s levanta tenedor derecho\n", posi, nom);
 	}else if (acc == 2){
-		printf("%d Filósofo %s levanta tenedor izquierdo\n", posicion, nom);
+		printf("%d Filósofo %s levanta tenedor izquierdo\n", posi, nom);
 	}else if (acc == 3){
-		printf("%d Filósofo %s está comiendo\n", posicion, nom);
+		printf("%d Filósofo %s está comiendo\n", posi, nom);
 	}
 }
 
@@ -156,7 +155,7 @@ bool tomarTenedor(char* nom){
 		printAccion(3, nom, pos);
 		comer = true;
 	}else{
-		printf("%d El filósofo %s no puede comer\n", posicion, nom);
+		printf("%d El filósofo %s no puede comer\n", pos, nom);
 	}
 	return comer;		
 }
