@@ -181,10 +181,12 @@ void *comer (void *arg){
 	//Bucle infinito
 	for(int i = 0; true; i++){	
 		//Levanta Tenedores
-		tomarTenedor(nombre);
+		bool com = tomarTenedor(nombre);
+		if (com == true){
+			sleep(5);
+			dejarTenedor(nombre);
+		}
 		sleep(5);
-		//dejarTenedor(nombre);
-		//sleep(5);
 	}
 	
 	
