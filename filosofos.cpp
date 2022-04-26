@@ -10,6 +10,15 @@
 // Metodo filosofo comer
 void *comer (void *arg);
 
+//Método para imprimir acción
+void printAccion (int acc, char* nom);
+
+//Método para encontrar la posición del Filósofo
+int posicion(char* nom);
+
+//Método para coger los tenedores
+void tomarTenedor(char* nom);
+
 //Recurso principal
 int variable = 0;
 
@@ -23,9 +32,11 @@ int tenedores[NUM_FILOSOFOS];
 //3 = comer
 int accion_Filo[NUM_FILOSOFOS];
 
+//Nombres de los filósofos
+char nomFilo[10][20] = {"Confucio", "Pitágoras", "Platón", "Sócrates", "Epicurio", "Tales", "Heráclito", "Diógenes", "Sófocles", "Zenón"};
+
 int main(void){
 	//Array de nombres de filósofos
-	char nomFilo[10][20] = {"Confucio", "Pitágoras", "Platón", "Sócrates", "Epicurio", "Tales", "Heráclito", "Diógenes", "Sófocles", "Zenón"};
 	
 	int i;
 	int j;
@@ -53,6 +64,7 @@ int main(void){
 		if (estNom[j] == 0){
 			pthread_create(&filosofos[i], NULL, &comer, &nomFilo[j]);
 			estNom[j] += 1;
+			accion_Filo[i] = 0;
 		//Si el nombre ha sido usado, NUM_FILOSOFOS > 10
 		} else{
 			char num[1];
@@ -86,14 +98,47 @@ int main(void){
 	return 0;
 }
 
+//Imprimir acción
+void printAccion(int acc, char* nom){
+	if (acc == 0){
+		printf("Filósofo %s está pensando", nom);
+	}else if(acc == 1){
+		printf("Filósofo %s levanta tenedor derecho", nom);
+	}else if (acc == 2){
+		printf("Filósofo %s levanta tenedor izquierdo", nom);
+	}else if (acc == 3){
+		printf("Filósofo %s está comiendo", nom);
+	}
+}
+
+//Encontrar posición del filósofo
+int posicion(char* nom){
+	int pos = 0;
+	for (int i = 0; i < NUM_FILOSOFOS; i++){
+		if (nomFilo[i] == nom){
+			pos = i;
+			break;
+		}
+	}
+	return pos;
+}
+
+//Tomar el tenedor
+void tomarTenedor(char* nom){
+	
+}
+
 //Se hace uso del recurso compartido
 void *comer (void *arg){
 
 	char *nombre = (char *)arg;
 	//int ident = *((int *)arg);
-	for (int i=1; i<=3; i++){
+	/*for (int i=1; i<=3; i++){
 		variable = variable + 1;
 		printf("Filósofo %s está comiendo : %d . Variable = %d \n", nombre, i, variable);
-	}
+	}*/
+	//Levanta el tenedor derecho
+	
+	
 	return NULL;
 }
