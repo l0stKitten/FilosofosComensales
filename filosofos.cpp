@@ -3,6 +3,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
+#include<unistd.h>
 
 //Definimos globalmente un número de filosofos
 #define NUM_FILOSOFOS 5
@@ -11,19 +12,25 @@
 void *comer (void *arg);
 
 //Método para imprimir acción
-void printAccion (int acc, char* nom);
+void printAccion (int acc, char* nom, int posicion);
 
 //Método para encontrar la posición del Filósofo
 int posicion(char* nom);
 
 //Método para coger los tenedores
-void tomarTenedor(char* nom);
+bool tomarTenedor(char* nom);
+
+//Método para dejar los tenedores
+void dejarTenedor(char* nom);
 
 //Recurso principal
 int variable = 0;
 
 //Tenedores
 int tenedores[NUM_FILOSOFOS];
+
+//Estado de tenedores
+int esTenedor[NUM_FILOSOFOS];
 
 //Acciones de los filosofos
 //0 = pensar
@@ -53,6 +60,7 @@ int main(void){
 	for (i = 0; i < NUM_FILOSOFOS; i++){
 		tenedores[i] = i;
 		accion_Filo[i] = 0;
+		esTenedor[i] = 0;
 	}
 
 	//Creacion de los filosofos
@@ -74,7 +82,10 @@ int main(void){
 			estNom[i] += 1;
 		}
 		j++;
+		printf("CREANDO FILOSOFOS\n");
 	}
+
+	printf("Se crearon todos los filosofos\n");
 
 	//Create Inicial
 	//pthread_create(&epicurio, NULL, &filosofo, &filo);
@@ -99,15 +110,15 @@ int main(void){
 }
 
 //Imprimir acción
-void printAccion(int acc, char* nom){
+void printAccion(int acc, char* nom, int posicion){
 	if (acc == 0){
-		printf("Filósofo %s está pensando", nom);
+		printf("%d Filósofo %s está pensando\n", posicion, nom);
 	}else if(acc == 1){
-		printf("Filósofo %s levanta tenedor derecho", nom);
+		printf("%d Filósofo %s levanta tenedor derecho\n", posicion, nom);
 	}else if (acc == 2){
-		printf("Filósofo %s levanta tenedor izquierdo", nom);
+		printf("%d Filósofo %s levanta tenedor izquierdo\n", posicion, nom);
 	}else if (acc == 3){
-		printf("Filósofo %s está comiendo", nom);
+		printf("%d Filósofo %s está comiendo\n", posicion, nom);
 	}
 }
 
@@ -124,8 +135,38 @@ int posicion(char* nom){
 }
 
 //Tomar el tenedor
-void tomarTenedor(char* nom){
+bool tomarTenedor(char* nom){
+	int pos = posicion(nom);
+	bool tenedorD = false;
+	bool tenedorI = false;
+	bool comer = false;
+	if (esTenedor[pos] == 0){
+		esTenedor[pos] = 1;
+		tenedorD = true;
+		printAccion(1, nom, pos);
+	}
 	
+	if (esTenedor[(pos+1)%5] == 0){
+		esTenedor[(pos+1)%5] = 1;
+		tenedorI = true;
+		printAccion(2, nom, pos);
+	}
+
+	if (tenedorD == true && tenedorI == true){
+		printAccion(3, nom, pos);
+		comer = true;
+	}else{
+		printf("%d El filósofo %s no puede comer\n", posicion, nom);
+	}
+	return comer;		
+}
+
+//Dejar el tenedor
+void dejarTenedor(char* nom){
+	int pos = posicion(nom);
+	esTenedor[pos] = 0;
+	esTenedor[(pos+1)%5] = 0;
+	printAccion(0, nom, pos);
 }
 
 //Se hace uso del recurso compartido
@@ -137,7 +178,15 @@ void *comer (void *arg){
 		variable = variable + 1;
 		printf("Filósofo %s está comiendo : %d . Variable = %d \n", nombre, i, variable);
 	}*/
-	//Levanta el tenedor derecho
+
+	//Bucle infinito
+	for(int i = 0; true; i++){	
+		//Levanta Tenedores
+		tomarTenedor(nombre);
+		sleep(5);
+		//dejarTenedor(nombre);
+		//sleep(5);
+	}
 	
 	
 	return NULL;
