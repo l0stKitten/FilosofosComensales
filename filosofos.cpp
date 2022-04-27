@@ -39,6 +39,9 @@ int esTenedor[NUM_FILOSOFOS];
 //3 = comer
 int accion_Filo[NUM_FILOSOFOS];
 
+//Mutex
+pthread_mutex_t mutex;
+
 //Nombres de los filósofos
 char nomFilo[10][20] = {"Confucio", "Pitágoras", "Platón", "Sócrates", "Epicurio", "Tales", "Heráclito", "Diógenes", "Sófocles", "Zenón"};
 
@@ -56,6 +59,8 @@ int main(void){
 	pthread_t filosofos[NUM_FILOSOFOS];
 	//int identificadores[NUM_FILOSOFOS];
 	
+	//Mutex
+	pthread_mutex_init(&mutex, NULL);
 	//Inicialización de los tenedores y estado de los filosofos
 	for (i = 0; i < NUM_FILOSOFOS; i++){
 		tenedores[i] = i;
@@ -103,6 +108,7 @@ int main(void){
 	//pthread_join(epicurio, NULL);
 	//pthread_join(confucio, NULL);
 	
+	pthread_mutex_destroy(&mutex);
 	printf("Variable: %d \n", variable);
 
 	return 0;
@@ -135,6 +141,8 @@ int posicion(char* nom){
 
 //Tomar el tenedor
 bool tomarTenedor(char* nom){
+
+	//Mutex
 	int pos = posicion(nom);
 	bool tenedorD = false;
 	bool tenedorI = false;
@@ -157,6 +165,8 @@ bool tomarTenedor(char* nom){
 	}else{
 		printf("%d El filósofo %s no puede comer\n", pos, nom);
 	}
+
+	//Mutex
 	return comer;		
 }
 
@@ -181,11 +191,13 @@ void *comer (void *arg){
 	//Bucle infinito
 	for(int i = 0; true; i++){	
 		//Levanta Tenedores
+		//pthread_mutex_lock(&mutex);
 		bool com = tomarTenedor(nombre);
 		if (com == true){
 			sleep(5);
 			dejarTenedor(nombre);
 		}
+		//pthread_mutex_unlock(&mutex);
 		sleep(5);
 	}
 	
